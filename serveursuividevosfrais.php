@@ -1,34 +1,24 @@
 <?php
 include "fonctions.php";
 
-// contrÃ´le de rÃ©ception de paramÃ¨tre
+// contrÃƒÂ´le de rÃƒÂ©ception de paramÃƒÂ¨tre
 if(isset($_POST["operation"])){
 	
-	// demande de rÃ©cupÃ©ration du dernier profil
+	// demande de rÃƒÂ©cupÃƒÂ©ration du dernier profil
 	if($_REQUEST["operation"]=="authentification"){
 		
 		try{
 			print ("authentification%");
-			// rÃ©cupÃ©ration des donnÃ©es en post
+			// rÃƒÂ©cupÃƒÂ©ration des donnÃƒÂ©es en post
 			$lesdonnees = $_REQUEST["lesdonnees"];
 			$donnee = json_decode($lesdonnees);
 			$identifiant = $donnee[0];
 			$mdp = $donnee[1];
 			$cnx = connexionPDO();
-			
-			// rÃ©cupÃ¨re le id 
-			//$larequete2 = "select visiteur.id from visiteur where login='".$identifiant."'"." and mdp='".$mdp."'";
-			//$req2 = $cnx->prepare($larequete2);
-			//$req2->execute();
-			//$rep = $req2->fetch();
-			//print ($rep['id']);
-
 			$larequete = "select * from visiteur where login='".$identifiant."'"." and mdp='".$mdp."'";
 			$req = $cnx->prepare($larequete);
 			$req->execute();
-			
-			//$nb_ligne = $req->rowCount();
-			// s'il y a un profil, envoit de la rÃ©ussite d'authenfication
+			// s'il y a un profil, envoit de la rÃƒÂ©ussite d'authenfication
 			if($ligne = $req->fetch(PDO::FETCH_ASSOC)){
 				print ("valide !%");
 			}else{print ("non valide !%");}
@@ -42,17 +32,17 @@ if(isset($_POST["operation"])){
 
 		try{
                         print ("enreg%");
-			// récupération des données en post
+			// rÃ©cupÃ©ration des donnÃ©es en post
 			$lesdonnees = $_REQUEST["lesdonnees"];                   
 			$donnee = json_decode($lesdonnees);
-                        // récupération des données d'authentification
+                        // rÃ©cupÃ©ration des donnÃ©es d'authentification
                         $identifiant = $donnee[0];
                         $mdp = $donnee[1];
-                        // récupération du nombre de ligne dans le tableau des données
+                        // rÃ©cupÃ©ration du nombre de ligne dans le tableau des donnÃ©es
                         $size = count($donnee);
 			// insertion dans la BD
         		$cnx = connexionPDO();
-                        // récupération de l'id lié aux donnéees d'authentification
+                        // rÃ©cupÃ©ration de l'id liÃ© aux donnÃ©ees d'authentification
 			$larequeteID = "select visiteur.id from visiteur where login='".$identifiant."'"." and mdp='".$mdp."'";
 			$reqID = $cnx->prepare($larequeteID);
 			$reqID->execute();
@@ -61,11 +51,11 @@ if(isset($_POST["operation"])){
                         $moi = "";
                         // on dissocie les frais par date
                         for ($k = 2; $k< $size; $k++){
-                            // on découpe la variable string qui contient toute les données qu'on avait séparé par un symbol
+                            // on dÃ©coupe la variable string qui contient toute les donnÃ©es qu'on avait sÃ©parÃ© par un symbol
                             $ligneDonnee = explode ( "&" , $donnee[$k] ,  PHP_INT_MAX );
-                            // on récupère le mois 
+                            // on rÃ©cupÃ¨re le mois 
                             $moi = substr($ligneDonnee[0],1, strlen($ligneDonnee[0]));
-                            // requete de creation fichefrais avec le mois récupéré
+                            // requete de creation fichefrais avec le mois rÃ©cupÃ©rÃ©
                             try {
                             $larequete = "insert into fichefrais (mois, idvisiteur)";
                             $larequete .= " values ('".$moi."', '".$ID."')";
@@ -76,9 +66,9 @@ if(isset($_POST["operation"])){
                                 print "Erreur !%".$e->getMessage();
                                 die();
                             }
-                            // on vérifie le type de de frais contenu dans chaque ligne de la liste $ligneDonnee
+                            // on vÃ©rifie le type de de frais contenu dans chaque ligne de la liste $ligneDonnee
                             for ($i = 1 ; $i<count($ligneDonnee); $i++){
-                                // on vérifie si c'est un Type de Frais dans l'ID à trois caractères
+                                // on vÃ©rifie si c'est un Type de Frais dans l'ID Ã  trois caractÃ¨res
                                 if (substr($ligneDonnee[$i], 0, 3)== "NUI" || substr($ligneDonnee[$i], 0, 3)== "ETP" || substr($ligneDonnee[$i], 0, 3)== "REP"){
                                     // requete d'enregistrement du frais
                                     $type = substr($ligneDonnee[$i], 0, 3);
@@ -97,7 +87,7 @@ if(isset($_POST["operation"])){
                                     }
 				}
                                 }else{
-                                    // vérifie si c'est un frais de KM
+                                    // vÃ©rifie si c'est un frais de KM
                                     if(substr($ligneDonnee[$i], 0, 2)== "KM"){
                                        // requete d'enregistrement du frais KM
                                        $type = substr($ligneDonnee[$i], 0, 2);
@@ -115,13 +105,13 @@ if(isset($_POST["operation"])){
                                        }
 				}
                                     }else{
-                                        // on sépare les information d'un frais HF qu'on a séparé par un symbol
+                                        // on sÃ©pare les information d'un frais HF qu'on a sÃ©parÃ© par un symbol
                                         $hF = explode ( "|" , $ligneDonnee[$i], PHP_INT_MAX  );
-                                        $jour = substr($hF[0], 2, strlen($hF[0])); // récupération du jour
-                                        $annee = substr($hF[1], 1, strlen($hF[1])); // récupération année
+                                        $jour = substr($hF[0], 2, strlen($hF[0])); // rÃ©cupÃ©ration du jour
+                                        $annee = substr($hF[1], 1, strlen($hF[1])); // rÃ©cupÃ©ration annÃ©e
                                         $laDate = $annee."-".$moi."-".$jour; // variable contenant la date du frais hf
                                         for ($j = 2 ; $j<count($hF); $j++){
-                                            // on récupère les informations nécessaire
+                                            // on rÃ©cupÃ¨re les informations nÃ©cessaire
                                            if( substr($hF[$j], 0, 3)== "MOT"){
                                                $motif = 
                                                        substr($hF[$j], 3, strlen($hF[$j]));
